@@ -55,3 +55,31 @@ function uploadFile() {
 
 }
 </script>
+<input type="file" id="fileInput">
+<input type="text" id="titleInput" placeholder="Enter title">
+<button onclick="uploadPost()">Upload</button>
+
+<div id="posts"></div>
+
+<script>
+function uploadPost(){
+
+let file = document.getElementById("fileInput").files[0];
+let title = document.getElementById("titleInput").value;
+
+if(!file){
+alert("Choose a file first");
+return;
+}
+
+let url = URL.createObjectURL(file);
+
+let post = document.createElement("div");
+
+post.innerHTML =
+"<h3>"+title+"</h3><img src='"+url+"' width='200'>";
+
+document.getElementById("posts").appendChild(post);
+
+}
+</script>
