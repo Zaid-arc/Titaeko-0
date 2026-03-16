@@ -29,3 +29,29 @@ function uploadFile() {
 
 </body>
 </html>
+<input type="file" id="fileInput">
+<button onclick="uploadFile()">Upload</button>
+
+<div id="posts"></div>
+
+<script>
+function uploadFile() {
+
+  const fileInput = document.getElementById("fileInput");
+  const file = fileInput.files[0];
+
+  if(!file){
+    alert("Please choose a file");
+    return;
+  }
+
+  const url = URL.createObjectURL(file);
+
+  const img = document.createElement("img");
+  img.src = url;
+  img.style.width = "200px";
+
+  document.getElementById("posts").appendChild(img);
+
+}
+</script>
