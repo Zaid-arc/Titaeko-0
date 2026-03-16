@@ -1,67 +1,26 @@
-
-<input type="file" id="fileUpload">
-<button onclick="uploadFile()">Upload</button>
-
-<script>
-function uploadFile() {
-  alert("File uploaded!");
-}
-</script>
-
-<input type="text" placeholder="Enter title">
-
-<div id="posts"></div><!DOCTYPE html>
+<!DOCTYPE html>
 <html>
+
 <head>
-<title>Titaeko</title>
+<title>Titaeko Platform</title>
 </head>
 
 <body>
 
 <h1>Titaeko Platform</h1>
 
-<input type="text" placeholder="Search">
+<input type="file" id="fileInput">
+
+<input type="text" id="titleInput" placeholder="Enter title">
+
+<button onclick="uploadPost()">Upload</button>
 
 <br><br>
 
-<button>Upload</button>
-<button>Profile</button>
-
-</body>
-</html>
-<input type="file" id="fileInput">
-<button onclick="uploadFile()">Upload</button>
-
 <div id="posts"></div>
 
 <script>
-function uploadFile() {
 
-  const fileInput = document.getElementById("fileInput");
-  const file = fileInput.files[0];
-
-  if(!file){
-    alert("Please choose a file");
-    return;
-  }
-
-  const url = URL.createObjectURL(file);
-
-  const img = document.createElement("img");
-  img.src = url;
-  img.style.width = "200px";
-
-  document.getElementById("posts").appendChild(img);
-
-}
-</script>
-<input type="file" id="fileInput">
-<input type="text" id="titleInput" placeholder="Enter title">
-<button onclick="uploadPost()">Upload</button>
-
-<div id="posts"></div>
-
-<script>
 function uploadPost(){
 
 let file = document.getElementById("fileInput").files[0];
@@ -82,4 +41,8 @@ post.innerHTML =
 document.getElementById("posts").appendChild(post);
 
 }
+
 </script>
+
+</body>
+</html>
