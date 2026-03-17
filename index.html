@@ -244,3 +244,27 @@ location.reload();
 </body>
 </html><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDanKvJNASVUM89gqJN2bKMm7JvYslUVV0",
+  authDomain: "titaeko-c440e.firebaseapp.com",
+  projectId: "titaeko-c440e",
+  storageBucket: "titaeko-c440e.firebasestorage.app",
+  messagingSenderId: "228196080682",
+  appId: "1:228196080682:web:2dea57dbc8e8b84c9af753",
+  measurementId: "G-MNW7GKD1WD"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+</script>
+<script>
+function testSave(){
+db.collection("users").add({
+name:"Test User",
+time:new Date()
+});
+alert("Data saved 🔥");
+}
+</script>
+<button onclick="testSave()">Test Firebase</button>
