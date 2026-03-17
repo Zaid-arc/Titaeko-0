@@ -1,64 +1,8 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-<title>Titaeko Platform</title>
-</head>
-
 <body>
 
-<h1>Titaeko Platform</h1>
-
-<input type="file" id="fileInput">
-
-<input type="text" id="titleInput" placeholder="Enter title">
-
-<button onclick="uploadPost()">Upload</button>
-
-<br><br>
-
-<div id="posts"></div>
-
-<script>
-
-function uploadPost(){
-
-let file = document.getElementById("fileInput").files[0];
-let title = document.getElementById("titleInput").value;
-
-if(!file){
-alert("Choose a file first");
-return;
-}
-
-let url = URL.createObjectURL(file);
-
-let post = document.createElement("div");
-
-post.innerHTML =
-"<h3>"+title+"</h3><img src='"+url+"' width='200'>";
-
-document.getElementById("posts").appendChild(post);
-
-}
-
-</script>
+<input type="file">
 
 </body>
 </html>
-<input type="file" id="fileInput" onchange="previewFile()">
-
-<img id="preview" width="200">
-
-<script>
-function previewFile(){
-
-let file = document.getElementById("fileInput").files[0];
-
-if(file){
-let url = URL.createObjectURL(file);
-document.getElementById("preview").src = url;
-}
-
-}
-</script>
