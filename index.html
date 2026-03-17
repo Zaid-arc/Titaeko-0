@@ -46,3 +46,19 @@ document.getElementById("posts").appendChild(post);
 
 </body>
 </html>
+<input type="file" id="fileInput" onchange="previewFile()">
+
+<img id="preview" width="200">
+
+<script>
+function previewFile(){
+
+let file = document.getElementById("fileInput").files[0];
+
+if(file){
+let url = URL.createObjectURL(file);
+document.getElementById("preview").src = url;
+}
+
+}
+</script>
