@@ -1,9 +1,30 @@
-<label onclick="openFile()" style="padding:10px; background:black; color:white; display:inline-block;">
-📁 Choose File
-</label>
+<!DOCTYPE html>
+<html>
 
-<input type="file" id="fileInput" style="display:none;"><script>
-function openFile(){
-document.getElementById("fileInput").click();
-}
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Titaeko</title>
+</head>
+
+<body>
+
+<h2>Titaeko Platform</h2>
+
+<!-- REAL BUTTON -->
+<button onclick="document.getElementById('fileInput').click()">
+Choose File
+</button>
+
+<!-- HIDDEN INPUT -->
+<input type="file" id="fileInput" style="display:none">
+
+<p id="status"></p>
+
+<script>
+document.getElementById("fileInput").addEventListener("change", function(){
+document.getElementById("status").innerText = "File Selected ✅";
+});
 </script>
+
+</body>
+</html>
