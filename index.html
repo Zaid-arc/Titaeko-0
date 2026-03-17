@@ -1,5 +1,123 @@
-<label for="fileInput" style="padding:12px; background:black; color:white; display:inline-block;">
-📁 Choose File
-</label>
+<!DOCTYPE html>
+<html>
 
-<input type="file" id="fileInput">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Titaeko</title>
+
+<style>
+body{
+font-family: Arial;
+margin:0;
+background:#f1f1f1;
+}
+
+.header{
+background:black;
+color:white;
+padding:15px;
+font-size:20px;
+font-weight:bold;
+display:flex;
+justify-content:space-between;
+}
+
+button{
+padding:8px;
+border:none;
+background:white;
+border-radius:5px;
+}
+
+.container{
+padding:10px;
+}
+
+.card{
+background:white;
+padding:10px;
+margin-top:10px;
+border-radius:10px;
+}
+
+input, textarea{
+width:100%;
+padding:8px;
+margin-top:5px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+<span>Titaeko Platform</span>
+<button onclick="openProfile()">👤 Profile</button>
+</div>
+
+<div class="container">
+
+<div id="profileBox" class="card" style="display:none;">
+<h3>Create Account</h3>
+
+<input type="text" id="name" placeholder="Enter Name">
+
+<input type="password" id="pass" placeholder="Enter Password">
+
+<input type="date" id="dob">
+
+<textarea id="desc" placeholder="Description"></textarea>
+
+<button onclick="saveProfile()">Create Account</button>
+</div>
+
+<div id="profileShow" class="card" style="display:none;"></div>
+
+</div>
+
+<script>
+
+function openProfile(){
+document.getElementById("profileBox").style.display = "block";
+}
+
+function saveProfile(){
+
+let name = document.getElementById("name").value;
+let pass = document.getElementById("pass").value;
+let dob = document.getElementById("dob").value;
+let desc = document.getElementById("desc").value;
+
+if(name=="" || pass=="" || dob==""){
+alert("Fill all details");
+return;
+}
+
+localStorage.setItem("name", name);
+localStorage.setItem("pass", pass);
+localStorage.setItem("dob", dob);
+localStorage.setItem("desc", desc);
+
+showProfile();
+}
+
+function showProfile(){
+
+let name = localStorage.getItem("name");
+let dob = localStorage.getItem("dob");
+let desc = localStorage.getItem("desc");
+
+if(name){
+document.getElementById("profileShow").style.display = "block";
+document.getElementById("profileShow").innerHTML =
+"<h2>"+name+"</h2><p>🎂 "+dob+"</p><p>"+desc+"</p>";
+}
+}
+
+showProfile();
+
+</script>
+
+</body>
+</html>
