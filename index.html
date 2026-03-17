@@ -120,4 +120,126 @@ showProfile();
 </script>
 
 </body>
+</html><!DOCTYPE html>
+<html>
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Titaeko</title>
+
+<style>
+body{font-family:Arial;margin:0;background:#f1f1f1;}
+.header{
+background:black;color:white;padding:15px;
+font-size:20px;font-weight:bold;
+display:flex;justify-content:space-between;
+}
+button{padding:8px;border:none;background:white;border-radius:5px;margin-top:5px;}
+.container{padding:10px;}
+.card{background:white;padding:10px;margin-top:10px;border-radius:10px;}
+input, textarea{width:100%;padding:8px;margin-top:5px;}
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+<span>Titaeko Platform</span>
+<button onclick="openAuth()">👤 Profile</button>
+</div>
+
+<div class="container">
+
+<!-- SIGNUP -->
+<div id="signupBox" class="card" style="display:none;">
+<h3>Create Account</h3>
+<input type="text" id="name" placeholder="Name">
+<input type="password" id="pass" placeholder="Password">
+<input type="date" id="dob">
+<textarea id="desc" placeholder="Description"></textarea>
+<button onclick="signup()">Create Account</button>
+</div>
+
+<!-- LOGIN -->
+<div id="loginBox" class="card" style="display:none;">
+<h3>Login</h3>
+<input type="text" id="loginName" placeholder="Name">
+<input type="password" id="loginPass" placeholder="Password">
+<button onclick="login()">Login</button>
+</div>
+
+<!-- PROFILE -->
+<div id="profileBox" class="card" style="display:none;"></div>
+
+</div>
+
+<script>
+
+function openAuth(){
+let saved = localStorage.getItem("name");
+
+if(saved){
+document.getElementById("loginBox").style.display="block";
+}else{
+document.getElementById("signupBox").style.display="block";
+}
+}
+
+// SIGNUP
+function signup(){
+let name = document.getElementById("name").value;
+let pass = document.getElementById("pass").value;
+let dob = document.getElementById("dob").value;
+let desc = document.getElementById("desc").value;
+
+if(name==""||pass==""||dob==""){
+alert("Fill all details");
+return;
+}
+
+localStorage.setItem("name",name);
+localStorage.setItem("pass",pass);
+localStorage.setItem("dob",dob);
+localStorage.setItem("desc",desc);
+
+alert("Account Created!");
+}
+
+// LOGIN
+function login(){
+let name = document.getElementById("loginName").value;
+let pass = document.getElementById("loginPass").value;
+
+let savedName = localStorage.getItem("name");
+let savedPass = localStorage.getItem("pass");
+
+if(name==savedName && pass==savedPass){
+showProfile();
+}else{
+alert("Wrong login");
+}
+}
+
+// SHOW PROFILE
+function showProfile(){
+let name = localStorage.getItem("name");
+let dob = localStorage.getItem("dob");
+let desc = localStorage.getItem("desc");
+
+document.getElementById("profileBox").style.display="block";
+
+document.getElementById("profileBox").innerHTML =
+"<h2>"+name+"</h2><p>🎂 "+dob+"</p><p>"+desc+"</p>"+
+"<button onclick='logout()'>Logout</button>";
+}
+
+// LOGOUT
+function logout(){
+location.reload();
+}
+
+</script>
+
+</body>
 </html>
