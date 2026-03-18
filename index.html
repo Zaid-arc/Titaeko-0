@@ -630,3 +630,23 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 </script>
+<textarea id="codeInput" rows="10" cols="50" placeholder="Paste your code here"></textarea>
+<button onclick="removeDuplicates()">Remove Duplicates</button>
+
+<h4>Result:</h4>
+<pre id="result"></pre>
+
+<script>
+function removeDuplicates(){
+  let input = document.getElementById("codeInput").value;
+  let lines = input.split("\n");
+
+  // Set automatically removes duplicates
+  let uniqueLines = [...new Set(lines)];
+
+  // Join back as string
+  let output = uniqueLines.join("\n");
+
+  document.getElementById("result").innerText = output;
+}
+</script>
