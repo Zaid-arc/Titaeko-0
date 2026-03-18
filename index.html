@@ -346,3 +346,76 @@ function updateProfile(){
   alert("Updated 🔥");
 }
 </script>
+<h3>Upload 🔥</h3>
+
+<input id="title" placeholder="Enter title"><br><br>
+<input type="file" id="file"><br><br>
+
+<button onclick="uploadFile()">Upload</button>
+
+<hr>
+
+<div id="posts"></div>
+<script>
+function uploadFile() {
+  let file = document.getElementById("file").files[0];
+  let title = document.getElementById("title").value;
+  let user = firebase.auth().currentUser;
+
+  if (!file || !title) {
+    alert("File and title required!");
+    return;
+  }
+
+  // Firebase Storage reference
+  let storageRef = firebase.storage().ref("uploads/" + file.name);
+
+  // Upload
+  storageRef.put(file).then(() => {
+    storageRef.getDownloadURL().then((url) => {
+      // Firestore me save
+      db.collection("posts").add({
+        title: title,
+        fileURL: url,
+        user: user.email,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      alert("Uploaded 🔥");
+      loadPosts();
+    });
+  });
+}
+</script>
+<script>
+function loadPosts() {
+  document.getElementById("posts").innerHTML = "";
+
+  db.collection("posts").orderBy("timestamp","desc").get().then((snapshot) => {
+    snapshot.forEach((doc) => {
+      let data = doc.data();
+
+      let post = `
+        <div>
+          <h4>${data.title}</h4>
+          <img src="${data.fileURL}" width="200">
+          <p>By: ${data.user}</p>
+        </div>
+        <hr>
+      `;
+
+      document.getElementById("posts").innerHTML += post;
+    });
+  });
+}
+</script>
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    document.getElementById("auth").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    document.getElementById("userEmail").innerText = user.email;
+
+    loadProfile(user); // Profile load
+    loadPosts();       // Posts load 🔥
+  }
+});
