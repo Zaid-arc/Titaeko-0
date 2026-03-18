@@ -428,3 +428,60 @@ firebase.auth().onAuthStateChanged(function(user) {
     loadProfile(user);
   }
 });
+<!-- Profile Section -->
+<div id="profile">
+  <h3>Profile 👤</h3>
+  
+  <p>Email: <span id="pemail"></span></p>
+  
+  <label>Name:</label>
+  <input id="newName" placeholder="Enter Name"><br><br>
+  
+  <label>DOB:</label>
+  <input id="newDOB" type="date"><br><br>
+  
+  <button onclick="updateProfile()">Update Profile</button>
+</div>
+
+<script>
+// Load profile from Firebase
+function loadProfile(user){
+  db.collection("users").doc(user.uid).get().then((doc)=>{
+    let data = doc.data();
+    if(data){
+      document.getElementById("pemail").innerText = user.email;
+      document.getElementById("newName").value = data.name || "";
+      document.getElementById("newDOB").value = data.dob || "";
+    }
+  });
+}
+
+// Update profile in Firebase
+function updateProfile(){
+  let user = firebase.auth().currentUser;
+  let newName = document.getElementById("newName").value;
+  let newDOB = document.getElementById("newDOB").value;
+
+  if(!newName || !newDOB){
+    alert("Name and DOB required!");
+    return;
+  }
+
+  db.collection("users").doc(user.uid).update({
+    name: newName,
+    dob: newDOB
+  }).then(()=>{
+    alert("Profile Updated 🔥");
+    loadProfile(user);
+  }).catch((err)=>{
+    alert("Error: " + err.message);
+  });
+}
+
+// Call on login
+firebase.auth().onAuthStateChanged(function(user) {
+  if(user){
+    loadProfile(user);
+  }
+});
+</script>
