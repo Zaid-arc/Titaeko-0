@@ -1,641 +1,182 @@
-function uploadFile() {
-  let file = document.getElementById("file").files[0];
-  if(!file){
-    alert("Please choose a file first!");
-    return;
-  }
-  alert("File ready to upload: " + file.name);
-}#file {
-  z-index: 1;
-  position: relative;
-}
-button {
-  z-index: 2;
-}<input type="file" id="file" style="display:block;">
-<button onclick="uploadFile()">Upload</button><!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Titaeko</title>
-
-<style>
-body{
-font-family: Arial;
-margin:0;
-background:#f1f1f1;
-}
-
-.header{
-background:black;
-color:white;
-padding:15px;
-font-size:20px;
-font-weight:bold;
-display:flex;
-justify-content:space-between;
-}
-
-button{
-padding:8px;
-border:none;
-background:white;
-border-radius:5px;
-}
-
-.container{
-padding:10px;
-}
-
-.card{
-background:white;
-padding:10px;
-margin-top:10px;
-border-radius:10px;
-}
-
-input, textarea{
-width:100%;
-padding:8px;
-margin-top:5px;
-}
-</style>
-
+  <title>Titaeko Platform</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js"></script>
+  <style>
+    body { font-family: Arial; margin:0; padding:0; }
+    header { background:#333; color:white; padding:10px; display:flex; justify-content:space-between; align-items:center; }
+    header h1 { font-weight:bold; margin:0; }
+    header div button { margin-left:10px; padding:5px 10px; cursor:pointer; }
+    #dashboard { display:none; padding:20px; }
+    #options { display:none; margin-top:10px; }
+    input, button { margin-top:5px; display:block; padding:5px; width:300px; }
+    #posts div { margin-bottom:20px; }
+    video { max-width:320px; max-height:240px; display:block; }
+  </style>
 </head>
-
 <body>
 
-<div class="header">
-<span>Titaeko Platform</span>
-<button onclick="openProfile()">👤 Profile</button>
-</div>
+<header>
+  <h1>Titaeko Platform</h1>
+  <div id="authButtons">
+    <button onclick="login()">Login</button>
+    <button onclick="signup()">Signup</button>
+    <button id="logoutBtn" onclick="logout()" style="display:none;">Logout</button>
+  </div>
+</header>
 
-<div class="container">
+<div id="dashboard">
+  <div id="userInfo">
+    <h3>Profile</h3>
+    <p>Email: <span id="userEmail"></span></p>
+    <input id="newName" placeholder="Enter Name">
+    <input id="newDOB" type="date" placeholder="Birth Date">
+    <button onclick="updateProfile()">Update Profile</button>
+  </div>
 
-<div id="profileBox" class="card" style="display:none;">
-<h3>Create Account</h3>
+  <button onclick="toggleOptions()">Toggle Options</button>
 
-<input type="text" id="name" placeholder="Enter Name">
+  <div id="options">
+    <h3>Upload Video</h3>
+    <input type="file" id="fileInput" accept="video/*">
+    <input type="text" id="fileTitle" placeholder="Enter video title">
+    <button onclick="uploadVideo()">Upload</button>
 
-<input type="password" id="pass" placeholder="Enter Password">
-
-<input type="date" id="dob">
-
-<textarea id="desc" placeholder="Description"></textarea>
-
-<button onclick="saveProfile()">Create Account</button>
-</div>
-
-<div id="profileShow" class="card" style="display:none;"></div>
-
-</div>
-
-<script>
-
-function openProfile(){
-document.getElementById("profileBox").style.display = "block";
-}
-
-function saveProfile(){
-
-let name = document.getElementById("name").value;
-let pass = document.getElementById("pass").value;
-let dob = document.getElementById("dob").value;
-let desc = document.getElementById("desc").value;
-
-if(name=="" || pass=="" || dob==""){
-alert("Fill all details");
-return;
-}
-
-localStorage.setItem("name", name);
-localStorage.setItem("pass", pass);
-localStorage.setItem("dob", dob);
-localStorage.setItem("desc", desc);
-
-showProfile();
-}
-
-function showProfile(){
-
-let name = localStorage.getItem("name");
-let dob = localStorage.getItem("dob");
-let desc = localStorage.getItem("desc");
-
-if(name){
-document.getElementById("profileShow").style.display = "block";
-document.getElementById("profileShow").innerHTML =
-"<h2>"+name+"</h2><p>🎂 "+dob+"</p><p>"+desc+"</p>";
-}
-}
-
-showProfile();
-
-</script>
-
-</body>
-</html><!DOCTYPE html>
-<html>
-
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Titaeko</title>
-
-<style>
-body{font-family:Arial;margin:0;background:#f1f1f1;}
-.header{
-background:black;color:white;padding:15px;
-font-size:20px;font-weight:bold;
-display:flex;justify-content:space-between;
-}
-button{padding:8px;border:none;background:white;border-radius:5px;margin-top:5px;}
-.container{padding:10px;}
-.card{background:white;padding:10px;margin-top:10px;border-radius:10px;}
-input, textarea{width:100%;padding:8px;margin-top:5px;}
-</style>
-
-</head>
-
-<body>
-
-<div class="header">
-<span>Titaeko Platform</span>
-<button onclick="openAuth()">👤 Profile</button>
-</div>
-
-<div class="container">
-
-<!-- SIGNUP -->
-<div id="signupBox" class="card" style="display:none;">
-<h3>Create Account</h3>
-<input type="text" id="name" placeholder="Name">
-<input type="password" id="pass" placeholder="Password">
-<input type="date" id="dob">
-<textarea id="desc" placeholder="Description"></textarea>
-<button onclick="signup()">Create Account</button>
-</div>
-
-<!-- LOGIN -->
-<div id="loginBox" class="card" style="display:none;">
-<h3>Login</h3>
-<input type="text" id="loginName" placeholder="Name">
-<input type="password" id="loginPass" placeholder="Password">
-<button onclick="login()">Login</button>
-</div>
-
-<!-- PROFILE -->
-<div id="profileBox" class="card" style="display:none;"></div>
-
+    <h3>Videos Feed</h3>
+    <div id="posts"></div>
+  </div>
 </div>
 
 <script>
+  // Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyDanKvJNASVUM89gqJN2bKMm7JvYslUVV0",
+    authDomain: "titaeko-c440e.firebaseapp.com",
+    projectId: "titaeko-c440e",
+    storageBucket: "titaeko-c440e.appspot.com",
+    messagingSenderId: "228196080682",
+    appId: "1:228196080682:web:2dea57dbc8e8b84c9af753"
+  };
 
-function openAuth(){
-let saved = localStorage.getItem("name");
+  // Init Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const storage = firebase.storage();
 
-if(saved){
-document.getElementById("loginBox").style.display="block";
-}else{
-document.getElementById("signupBox").style.display="block";
-}
-}
-
-// SIGNUP
-function signup(){
-let name = document.getElementById("name").value;
-let pass = document.getElementById("pass").value;
-let dob = document.getElementById("dob").value;
-let desc = document.getElementById("desc").value;
-
-if(name==""||pass==""||dob==""){
-alert("Fill all details");
-return;
-}
-
-localStorage.setItem("name",name);
-localStorage.setItem("pass",pass);
-localStorage.setItem("dob",dob);
-localStorage.setItem("desc",desc);
-
-alert("Account Created!");
-}
-
-
-// SHOW PROFILE
-function showProfile(){
-let name = localStorage.getItem("name");
-let dob = localStorage.getItem("dob");
-let desc = localStorage.getItem("desc");
-
-document.getElementById("profileBox").style.display="block";
-
-document.getElementById("profileBox").innerHTML =
-"<h2>"+name+"</h2><p>🎂 "+dob+"</p><p>"+desc+"</p>"+
-"<button onclick='logout()'>Logout</button>";
-}
-
-// LOGOUT
-function logout(){
-location.reload();
-}
-
-</script>
-
-</body>
-</html><script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDanKvJNASVUM89gqJN2bKMm7JvYslUVV0",
-  authDomain: "titaeko-c440e.firebaseapp.com",
-  projectId: "titaeko-c440e",
-  storageBucket: "titaeko-c440e.firebasestorage.app",
-  messagingSenderId: "228196080682",
-  appId: "1:228196080682:web:2dea57dbc8e8b84c9af753",
-  measurementId: "G-MNW7GKD1WD"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-</script>
-<script>
-function testSave(){
-db.collection("users").add({
-name:"Test User",
-time:new Date()
-});
-alert("Data saved 🔥");
-}
-</script>
-<button onclick="testSave()">Test Firebase</button>
-<script>
-firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
-    console.log("User logged in:", user.email);
-  } else {
-    console.log("No user logged in");
-  }
-});
-</script>
-<button onclick="logout()">Logout</button>
-<script>
-function logout(){
-  firebase.auth().signOut();
-  alert("Logged out ❌");
-}
-</script>
-<div id="auth">
-
-<h2>Signup</h2>
-<input id="name" placeholder="Name"><br>
-<input id="dob" type="date"><br>
-<input id="email" placeholder="Email"><br>
-<input id="password" type="password" placeholder="Password"><br>
-<button onclick="signup()">Signup</button>
-
-<hr>
-
-<h2>Login</h2>
-<input id="loginEmail" placeholder="Email"><br>
-<input id="loginPassword" type="password" placeholder="Password"><br>
-<button onclick="login()">Login</button>
-
-</div>
-
-<div id="dashboard" style="display:none;">
-<h2>Welcome 🔥</h2>
-<p id="userEmail"></p>
-<button onclick="logout()">Logout</button>
-</div>
-<script>
-firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
-    document.getElementById("auth").style.display = "none";
-    document.getElementById("dashboard").style.display = "block";
-
-    document.getElementById("userEmail").innerText = user.email;
-  } else {
-    document.getElementById("auth").style.display = "block";
-    document.getElementById("dashboard").style.display = "none";
-  }
-});
-</script>
-<script>
-function logout(){
-  firebase.auth().signOut();
-}
-</script>
-<h3>Profile 👤</h3>
-<p>Name: <span id="pname"></span></p>
-<p>DOB: <span id="pdob"></span></p>
-<p>Email: <span id="pemail"></span></p>
-
-<input id="newName" placeholder="New Name">
-<button onclick="updateProfile()">Update Name</button>
-
-
-<script>
-function updateProfile(){
-  let user = firebase.auth().currentUser;
-  let newName = document.getElementById("newName").value;
-
-  db.collection("users").doc(user.uid).update({
-    name: newName
-  });
-
-  alert("Updated 🔥");
-}
-</script>
-<h3>Upload 🔥</h3>
-
-<input id="title" placeholder="Enter title"><br><br>
-<input type="file" id="file"><br><br>
-
-<button onclick="uploadFile()">Upload</button>
-
-<hr>
-
-<div id="posts"></div>
-<script>
-function uploadFile() {
-  let file = document.getElementById("file").files[0];
-  let title = document.getElementById("title").value;
-  let user = firebase.auth().currentUser;
-
-  if (!file || !title) {
-    alert("File and title required!");
-    return;
+  // Login / Signup / Logout Functions (simplified)
+  function login(){
+    let email = prompt("Email:");
+    let pass = prompt("Password:");
+    auth.signInWithEmailAndPassword(email, pass)
+      .then(userCredential => { alert("Login Success!"); })
+      .catch(err => alert(err.message));
   }
 
-  // Firebase Storage reference
-  let storageRef = firebase.storage().ref("uploads/" + file.name);
-
-  // Upload
-  storageRef.put(file).then(() => {
-    storageRef.getDownloadURL().then((url) => {
-      // Firestore me save
-      db.collection("posts").add({
-        title: title,
-        fileURL: url,
-        user: user.email,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-
-      alert("Uploaded 🔥");
-      loadPosts();
-    });
-  });
-}
-</script>
-<script>
-function loadPosts() {
-  document.getElementById("posts").innerHTML = "";
-
-  db.collection("posts").orderBy("timestamp","desc").get().then((snapshot) => {
-    snapshot.forEach((doc) => {
-      let data = doc.data();
-
-      let post = `
-        <div>
-          <h4>${data.title}</h4>
-          <img src="${data.fileURL}" width="200">
-          <p>By: ${data.user}</p>
-        </div>
-        <hr>
-      `;
-
-      document.getElementById("posts").innerHTML += post;
-    });
-  });
-}
-</script>
-<script>
-firebase.auth().onAuthStateChanged(function(user) { 
-  if (user) { 
-    document.getElementById("auth").style.display = "none"; 
-    document.getElementById("dashboard").style.display = "block"; 
-    document.getElementById("userEmail").innerText = user.email; 
-    loadProfile(user); // Profile load 
-    loadPosts(); // Posts load 🔥 
+  function signup(){
+    let email = prompt("Email:");
+    let pass = prompt("Password:");
+    auth.createUserWithEmailAndPassword(email, pass)
+      .then(userCredential => { alert("Signup Success!"); })
+      .catch(err => alert(err.message));
   }
-});
-</script>
-  }
-});
-<input id="newName" placeholder="New Name"> 
-<input id="newDOB" type="date" placeholder="Date of Birth">
-<button onclick="updateProfile()">Update Profile</button>
 
-firebase.auth().onAuthStateChanged(function(user) {
-  if(user){
-    loadProfile(user);
+  function logout(){
+    auth.signOut().then(()=>{ alert("Logged out"); });
   }
-});
-<!-- Profile Section -->
-<div id="profile">
-  <h3>Profile 👤</h3>
-  
-  <p>Email: <span id="pemail"></span></p>
-  
-  <label>Name:</label>
-  <input id="newName" placeholder="Enter Name"><br><br>
-  
-  <label>DOB:</label>
-  <input id="newDOB" type="date"><br><br>
-  
-  <button onclick="updateProfile()">Update Profile</button>
-</div>
 
-<script>
-// Load profile from Firebase
-function loadProfile(user){
-  db.collection("users").doc(user.uid).get().then((doc)=>{
-    let data = doc.data();
-    if(data){
-      document.getElementById("pemail").innerText = user.email;
+  // Profile Load / Update
+  function loadProfile(user){
+    db.collection("users").doc(user.uid).get().then(doc=>{
+      let data = doc.data() || {};
+      document.getElementById("userEmail").innerText = user.email;
       document.getElementById("newName").value = data.name || "";
       document.getElementById("newDOB").value = data.dob || "";
-    }
-  });
-}
-
-// Update profile in Firebase
-function updateProfile(){
-  let user = firebase.auth().currentUser;
-  let newName = document.getElementById("newName").value;
-  let newDOB = document.getElementById("newDOB").value;
-
-  if(!newName || !newDOB){
-    alert("Name and DOB required!");
-    return;
+    });
   }
 
-  db.collection("users").doc(user.uid).update({
-    name: newName,
-    dob: newDOB
-  }).then(()=>{
-    alert("Profile Updated 🔥");
-    loadProfile(user);
-  }).catch((err)=>{
-    alert("Error: " + err.message);
-  });
-}
-
-// Call on login
-firebase.auth().onAuthStateChanged(function(user) {
-  if(user){
-    loadProfile(user);
-  }
-});
-</script>
-<!-- Upload Section -->
-<div id="uploadSection">
-  <h3>Upload File 🔥</h3>
-
-  <!-- File input -->
-  <input type="file" id="fileInput" style="display:block; margin-bottom:10px;">
-  
-  <!-- Title input -->
-  <input type="text" id="fileTitle" placeholder="Enter title" style="display:block; margin-bottom:10px;">
-  
-  <!-- Upload button -->
-  <button id="uploadBtn">Upload</button>
-  
-  <hr>
-  <div id="posts"></div>
-</div>
-
-<script>
-  // Click test to make sure input works
-  const fileInput = document.getElementById("fileInput");
-  const uploadBtn = document.getElementById("uploadBtn");
-
-  uploadBtn.addEventListener("click", function(){
-    const file = fileInput.files[0];
-    const title = document.getElementById("fileTitle").value;
-
-    if(!file){
-      alert("Please choose a file!");
-      return;
-    }
-    if(!title){
-      alert("Please enter a title!");
-      return;
-    }
-
-    alert("File ready to upload: " + file.name + " | Title: " + title);
-
-    // Firebase Upload Example
-    // let storageRef = firebase.storage().ref("uploads/" + file.name);
-    // storageRef.put(file).then(()=> { ... });
-  });
-
-  // Optional: click test on file input
-  fileInput.addEventListener("click", function(){
-    console.log("File input clicked");
-  });
-</script>
-<!-- Upload Section -->
-<div id="uploadSection">
-  <h3>Upload Video 🔥</h3>
-
-  <!-- File input -->
-  <input type="file" id="fileInput" accept="video/*" style="display:block; margin-bottom:10px;">
-  
-  <!-- Title input -->
-  <input type="text" id="fileTitle" placeholder="Enter title" style="display:block; margin-bottom:10px;">
-  
-  <!-- Upload button -->
-  <button id="uploadBtn">Upload</button>
-  
-  <hr>
-  <div id="posts"></div>
-</div>
-
-<script>
-const fileInput = document.getElementById("fileInput");
-const uploadBtn = document.getElementById("uploadBtn");
-const postsDiv = document.getElementById("posts");
-
-// Upload Video
-uploadBtn.addEventListener("click", function(){
-  const file = fileInput.files[0];
-  const title = document.getElementById("fileTitle").value;
-  const user = firebase.auth().currentUser;
-
-  if(!file){
-    alert("Please choose a video!");
-    return;
-  }
-  if(!title){
-    alert("Please enter a title!");
-    return;
+  function updateProfile(){
+    let user = auth.currentUser;
+    let name = document.getElementById("newName").value;
+    let dob = document.getElementById("newDOB").value;
+    if(!name || !dob){ alert("Name and DOB required"); return; }
+    db.collection("users").doc(user.uid).set({name, dob}).then(()=>{
+      alert("Profile Updated 🔥");
+      loadProfile(user);
+    });
   }
 
-  // Firebase Storage reference
-  let storageRef = firebase.storage().ref("uploads/" + file.name);
-  storageRef.put(file).then(() => {
-    storageRef.getDownloadURL().then((url) => {
-      // Firestore save
-      db.collection("posts").add({
-        title: title,
-        fileURL: url,
-        user: user.email,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  // Toggle Options
+  function toggleOptions(){
+    const options = document.getElementById("options");
+    options.style.display = options.style.display === "none" ? "block" : "none";
+  }
+
+  // Video Upload
+  function uploadVideo(){
+    let file = document.getElementById("fileInput").files[0];
+    let title = document.getElementById("fileTitle").value;
+    let user = auth.currentUser;
+
+    if(!file){ alert("Choose a video"); return; }
+    if(!title){ alert("Enter title"); return; }
+
+    let storageRef = storage.ref("uploads/" + file.name);
+    storageRef.put(file).then(()=>{
+      storageRef.getDownloadURL().then(url=>{
+        db.collection("posts").add({
+          title,
+          fileURL: url,
+          user: user.email,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(()=>{
+          alert("Video Uploaded 🔥");
+          loadPosts();
+        });
       });
-
-      alert("Video Uploaded 🔥");
-      loadPosts();
     });
-  });
-});
-
-// Show Posts
-function loadPosts(){
-  postsDiv.innerHTML = "";
-  db.collection("posts").orderBy("timestamp", "desc").get().then((snapshot) => {
-    snapshot.forEach((doc) => {
-      let data = doc.data();
-      let post = `
-        <div style="margin-bottom:20px;">
-          <h4>${data.title}</h4>
-          <video width="320" height="240" controls>
-            <source src="${data.fileURL}" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-          <p>By: ${data.user}</p>
-          <hr>
-        </div>
-      `;
-      postsDiv.innerHTML += post;
-    });
-  });
-}
-
-// Auto load posts after login
-firebase.auth().onAuthStateChanged(function(user) {
-  if(user){
-    loadPosts();
   }
-});
+
+  // Load Posts
+  function loadPosts(){
+    const postsDiv = document.getElementById("posts");
+    postsDiv.innerHTML = "";
+    db.collection("posts").orderBy("timestamp","desc").get().then(snapshot=>{
+      snapshot.forEach(doc=>{
+        let data = doc.data();
+        let post = `
+          <div>
+            <h4>${data.title}</h4>
+            <video controls>
+              <source src="${data.fileURL}" type="video/mp4">
+            </video>
+            <p>By: ${data.user}</p>
+            <hr>
+          </div>`;
+        postsDiv.innerHTML += post;
+      });
+    });
+  }
+
+  // Auth State
+  auth.onAuthStateChanged(user=>{
+    if(user){
+      document.getElementById("authButtons").style.display="none";
+      document.getElementById("logoutBtn").style.display="inline-block";
+      document.getElementById("dashboard").style.display="block";
+      loadProfile(user);
+      loadPosts();
+    } else {
+      document.getElementById("authButtons").style.display="flex";
+      document.getElementById("logoutBtn").style.display="none";
+      document.getElementById("dashboard").style.display="none";
+    }
+  });
+
 </script>
-<textarea id="codeInput" rows="10" cols="50" placeholder="Paste your code here"></textarea>
-<button onclick="removeDuplicates()">Remove Duplicates</button>
-
-<h4>Result:</h4>
-<pre id="result"></pre>
-
-<script>
-function removeDuplicates(){
-  let input = document.getElementById("codeInput").value;
-  let lines = input.split("\n");
-
-  // Set automatically removes duplicates
-  let uniqueLines = [...new Set(lines)];
-
-  // Join back as string
-  let output = uniqueLines.join("\n");
-
-  document.getElementById("result").innerText = output;
-}
-</script>
+</body>
+</html>
