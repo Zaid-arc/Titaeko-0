@@ -180,3 +180,24 @@
 </script>
 </body>
 </html>
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+apiKey: "AIzaSyBUjna28kgOjoRycTqtqFAK7J4Rtg0CjO8",
+authDomain: "titaeko-26c96.firebaseapp.com",
+projectId: "titaeko-26c96",
+storageBucket: "titaeko-26c96.firebasestorage.app",
+messagingSenderId: "111291755520",
+appId: "1:111291755520:web:58e2e941979813b53dbce5",
+measurementId: "G-5QMB7YVLCT"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
