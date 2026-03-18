@@ -2,6 +2,93 @@
 <html>
 <head>
   <title>Titaeko Platform</title>
+</head>
+<body>
+  <h1>Titaeko Platform</h1>
+
+  <!-- Auth Section (Starting Page) -->
+  <div id="auth">
+    <button id="signupBtn">Create Account</button>
+    <button id="loginBtn">Login</button>
+  </div>
+
+  <!-- Dashboard (hidden initially) -->
+  <div id="dashboard" style="display:none;">
+    <button id="logoutBtn">Logout</button>
+    <h2>Welcome, <span id="userName"></span></h2>
+    <input type="file" id="fileInput">
+    <input type="text" id="videoTitle" placeholder="Title">
+    <button id="uploadBtn">Upload</button>
+    <div id="videoFeed"></div>
+  </div>
+
+  <!-- Firebase JS (module) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBUjna28kgOjoRycTqtqFAK7J4Rtg0CjO8",
+      authDomain: "titaeko-26c96.firebaseapp.com",
+      projectId: "titaeko-26c96",
+      storageBucket: "titaeko-26c96.firebasestorage.app",
+      messagingSenderId: "111291755520",
+      appId: "1:111291755520:web:58e2e941979813b53dbce5",
+      measurementId: "G-5QMB7YVLCT"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Check login state on page load
+    onAuthStateChanged(auth, user => {
+      if(user) {
+        document.getElementById("auth").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        document.getElementById("userName").innerText = user.displayName || user.email;
+      } else {
+        document.getElementById("auth").style.display = "block";
+        document.getElementById("dashboard").style.display = "none";
+      }
+    });
+
+    // Signup
+    document.getElementById("signupBtn").addEventListener("click", () => {
+      let email = prompt("Enter your email:");
+      let password = prompt("Enter password:");
+      let name = prompt("Enter your name:");
+      let dob = prompt("Enter your birth date:");
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(userCredential => {
+          let user = userCredential.user;
+          return updateProfile(user, { displayName: name });
+        })
+        .then(() => alert("Account created successfully!"))
+        .catch(err => alert(err.message));
+    });
+
+    // Login
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      let email = prompt("Enter your email:");
+      let password = prompt("Enter password:");
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => alert("Login successful!"))
+        .catch(err => alert(err.message));
+    });
+
+    // Logout
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      signOut(auth).then(() => alert("Logged out!"));
+    });
+
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+  <title>Titaeko Platform</title>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
