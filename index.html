@@ -325,3 +325,24 @@ function logout(){
   firebase.auth().signOut();
 }
 </script>
+<h3>Profile 👤</h3>
+<p>Name: <span id="pname"></span></p>
+<p>DOB: <span id="pdob"></span></p>
+<p>Email: <span id="pemail"></span></p>
+
+<input id="newName" placeholder="New Name">
+<button onclick="updateProfile()">Update Name</button>
+
+
+<script>
+function updateProfile(){
+  let user = firebase.auth().currentUser;
+  let newName = document.getElementById("newName").value;
+
+  db.collection("users").doc(user.uid).update({
+    name: newName
+  });
+
+  alert("Updated 🔥");
+}
+</script>
