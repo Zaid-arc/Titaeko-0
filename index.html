@@ -268,3 +268,19 @@ alert("Data saved 🔥");
 }
 </script>
 <button onclick="testSave()">Test Firebase</button>
+<script>
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    console.log("User logged in:", user.email);
+  } else {
+    console.log("No user logged in");
+  }
+});
+</script>
+<button onclick="logout()">Logout</button>
+<script>
+function logout(){
+  firebase.auth().signOut();
+  alert("Logged out ❌");
+}
+</script>
