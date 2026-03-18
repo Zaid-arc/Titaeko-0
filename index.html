@@ -220,20 +220,6 @@ localStorage.setItem("desc",desc);
 alert("Account Created!");
 }
 
-// LOGIN
-function login(){
-let name = document.getElementById("loginName").value;
-let pass = document.getElementById("loginPass").value;
-
-let savedName = localStorage.getItem("name");
-let savedPass = localStorage.getItem("pass");
-
-if(name==savedName && pass==savedPass){
-showProfile();
-}else{
-alert("Wrong login");
-}
-}
 
 // SHOW PROFILE
 function showProfile(){
@@ -423,14 +409,17 @@ function loadPosts() {
   });
 }
 </script>
-firebase.auth().onAuthStateChanged(function(user) {
-  if (user) {
-    document.getElementById("auth").style.display = "none";
-    document.getElementById("dashboard").style.display = "block";
-    document.getElementById("userEmail").innerText = user.email;
-
-    loadProfile(user); // Profile load
-    loadPosts();       // Posts load 🔥
+<script>
+firebase.auth().onAuthStateChanged(function(user) { 
+  if (user) { 
+    document.getElementById("auth").style.display = "none"; 
+    document.getElementById("dashboard").style.display = "block"; 
+    document.getElementById("userEmail").innerText = user.email; 
+    loadProfile(user); // Profile load 
+    loadPosts(); // Posts load 🔥 
+  }
+});
+</script>
   }
 });
 <input id="newName" placeholder="New Name"> 
