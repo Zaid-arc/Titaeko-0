@@ -499,3 +499,50 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 </script>
+<!-- Upload Section -->
+<div id="uploadSection">
+  <h3>Upload File 🔥</h3>
+
+  <!-- File input -->
+  <input type="file" id="fileInput" style="display:block; margin-bottom:10px;">
+  
+  <!-- Title input -->
+  <input type="text" id="fileTitle" placeholder="Enter title" style="display:block; margin-bottom:10px;">
+  
+  <!-- Upload button -->
+  <button id="uploadBtn">Upload</button>
+  
+  <hr>
+  <div id="posts"></div>
+</div>
+
+<script>
+  // Click test to make sure input works
+  const fileInput = document.getElementById("fileInput");
+  const uploadBtn = document.getElementById("uploadBtn");
+
+  uploadBtn.addEventListener("click", function(){
+    const file = fileInput.files[0];
+    const title = document.getElementById("fileTitle").value;
+
+    if(!file){
+      alert("Please choose a file!");
+      return;
+    }
+    if(!title){
+      alert("Please enter a title!");
+      return;
+    }
+
+    alert("File ready to upload: " + file.name + " | Title: " + title);
+
+    // Firebase Upload Example
+    // let storageRef = firebase.storage().ref("uploads/" + file.name);
+    // storageRef.put(file).then(()=> { ... });
+  });
+
+  // Optional: click test on file input
+  fileInput.addEventListener("click", function(){
+    console.log("File input clicked");
+  });
+</script>
