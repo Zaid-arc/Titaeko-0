@@ -1,4 +1,18 @@
-<!DOCTYPE html>
+function uploadFile() {
+  let file = document.getElementById("file").files[0];
+  if(!file){
+    alert("Please choose a file first!");
+    return;
+  }
+  alert("File ready to upload: " + file.name);
+}#file {
+  z-index: 1;
+  position: relative;
+}
+button {
+  z-index: 2;
+}<input type="file" id="file" style="display:block;">
+<button onclick="uploadFile()">Upload</button><!DOCTYPE html>
 <html>
 
 <head>
