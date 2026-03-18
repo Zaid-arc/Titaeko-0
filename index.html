@@ -419,3 +419,12 @@ firebase.auth().onAuthStateChanged(function(user) {
     loadPosts();       // Posts load 🔥
   }
 });
+<input id="newName" placeholder="New Name"> 
+<input id="newDOB" type="date" placeholder="Date of Birth">
+<button onclick="updateProfile()">Update Profile</button>
+
+firebase.auth().onAuthStateChanged(function(user) {
+  if(user){
+    loadProfile(user);
+  }
+});
