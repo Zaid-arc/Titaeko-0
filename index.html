@@ -1,309 +1,173 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Titaeko Platform</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Clone</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Titaeko Platform</h1>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="YouTube Logo" width="100">
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search">
+            <button>Search</button>
+        </div>
+        <div class="user-icons">
+            <span>🔔</span>
+            <span>👤</span>
+        </div>
+    </nav>
 
-  <!-- Auth Section (Starting Page) -->
-  <div id="auth">
-    <button id="signupBtn">Create Account</button>
-    <button id="loginBtn">Login</button>
-  </div>
+    <div class="main-body">
+        <aside class="sidebar">
+            <ul>
+                <li>Home</li>
+                <li>Shorts</li>
+                <li>Subscriptions</li>
+                <hr>
+                <li>Library</li>
+                <li>History</li>
+            </ul>
+        </aside>
 
-  <!-- Dashboard (hidden initially) -->
-  <div id="dashboard" style="display:none;">
-    <button id="logoutBtn">Logout</button>
-    <h2>Welcome, <span id="userName"></span></h2>
-    <input type="file" id="fileInput">
-    <input type="text" id="videoTitle" placeholder="Title">
-    <button id="uploadBtn">Upload</button>
-    <div id="videoFeed"></div>
-  </div>
-
-  <!-- Firebase JS (module) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBUjna28kgOjoRycTqtqFAK7J4Rtg0CjO8",
-      authDomain: "titaeko-26c96.firebaseapp.com",
-      projectId: "titaeko-26c96",
-      storageBucket: "titaeko-26c96.firebasestorage.app",
-      messagingSenderId: "111291755520",
-      appId: "1:111291755520:web:58e2e941979813b53dbce5",
-      measurementId: "G-5QMB7YVLCT"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // Check login state on page load
-    onAuthStateChanged(auth, user => {
-      if(user) {
-        document.getElementById("auth").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
-        document.getElementById("userName").innerText = user.displayName || user.email;
-      } else {
-        document.getElementById("auth").style.display = "block";
-        document.getElementById("dashboard").style.display = "none";
-      }
-    });
-
-    // Signup
-    document.getElementById("signupBtn").addEventListener("click", () => {
-      let email = prompt("Enter your email:");
-      let password = prompt("Enter password:");
-      let name = prompt("Enter your name:");
-      let dob = prompt("Enter your birth date:");
-
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(userCredential => {
-          let user = userCredential.user;
-          return updateProfile(user, { displayName: name });
-        })
-        .then(() => alert("Account created successfully!"))
-        .catch(err => alert(err.message));
-    });
-
-    // Login
-    document.getElementById("loginBtn").addEventListener("click", () => {
-      let email = prompt("Enter your email:");
-      let password = prompt("Enter password:");
-
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => alert("Login successful!"))
-        .catch(err => alert(err.message));
-    });
-
-    // Logout
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-      signOut(auth).then(() => alert("Logged out!"));
-    });
-
-  </script>
+        <main class="video-grid">
+            <div class="video-card">
+                <img src="https://via.placeholder.com/250x150" alt="Thumbnail">
+                <div class="video-info">
+                    <h3>Modern Web Development 2026</h3>
+                    <p>Tech Channel • 1M views</p>
+                </div>
+            </div>
+            </main>
+    </div>
 </body>
-</html><!DOCTYPE html>
-<html>
-<head>
-  <title>Titaeko Platform</title>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js"></script>
-  <style>
-    body { font-family: Arial; margin:0; padding:0; }
-    header { background:#333; color:white; padding:10px; display:flex; justify-content:space-between; align-items:center; }
-    header h1 { font-weight:bold; margin:0; }
-    header div button { margin-left:10px; padding:5px 10px; cursor:pointer; }
-    #dashboard { display:none; padding:20px; }
-    #options { display:none; margin-top:10px; }
-    input, button { margin-top:5px; display:block; padding:5px; width:300px; }
-    #posts div { margin-bottom:20px; }
-    video { max-width:320px; max-height:240px; display:block; }
-  </style>
-</head>
-<body>
+</html>body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
 
-<header>
-  <h1>Titaeko Platform</h1>
-  <div id="authButtons">
-    <button onclick="login()">Login</button>
-    <button onclick="signup()">Signup</button>
-    <button id="logoutBtn" onclick="logout()" style="display:none;">Logout</button>
-  </div>
-</header>
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
 
-<div id="dashboard">
-  <div id="userInfo">
-    <h3>Profile</h3>
-    <p>Email: <span id="userEmail"></span></p>
-    <input id="newName" placeholder="Enter Name">
-    <input id="newDOB" type="date" placeholder="Birth Date">
-    <button onclick="updateProfile()">Update Profile</button>
-  </div>
+.search-bar input {
+    width: 400px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 20px 0 0 20px;
+}
 
-  <button onclick="toggleOptions()">Toggle Options</button>
+.search-bar button {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    border-radius: 0 20px 20px 0;
+}
 
-  <div id="options">
-    <h3>Upload Video</h3>
-    <input type="file" id="fileInput" accept="video/*">
-    <input type="text" id="fileTitle" placeholder="Enter video title">
-    <button onclick="uploadVideo()">Upload</button>
+.main-body {
+    display: flex;
+}
 
-    <h3>Videos Feed</h3>
-    <div id="posts"></div>
-  </div>
+.sidebar {
+    width: 200px;
+    height: 100vh;
+    background: white;
+    padding: 20px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.sidebar li:hover {
+    background: #e5e5e5;
+    border-radius: 10px;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    width: 100%;
+}
+
+.video-card img {
+    width: 100%;
+    border-radius: 12px;
+}
+
+.video-info h3 {
+    font-size: 16px;
+    margin: 10px 0 5px 0;
+}
+
+.video-info p {
+    font-size: 14px;
+    color: #606060;
+}<main class="video-grid" id="video-container">
+    <div class="video-card" onclick="playVideo('dQw4w9WgXcQ')">
+        <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg" alt="Thumbnail">
+        <div class="video-info">
+            <h3>Rick Astley - Never Gonna Give You Up</h3>
+            <p>Official Music • 1.5B views</p>
+        </div>
+    </div>
+</main>
+
+<div id="video-player" style="display:none; position:fixed; top:10%; left:15%; width:70%; height:70%; background:#000; z-index:1000;">
+    <button onclick="closeVideo()" style="position:absolute; right:10px; top:10px; color:white; background:red; border:none; padding:10px; cursor:pointer;">Close X</button>
+    <iframe id="youtube-frame" width="100%" height="100%" src="" frameborder="0" allowfullscreen></iframe>
 </div>
 
-<script>
-  // Firebase Config
-  const firebaseConfig = {
-    apiKey: "AIzaSyDanKvJNASVUM89gqJN2bKMm7JvYslUVV0",
-    authDomain: "titaeko-c440e.firebaseapp.com",
-    projectId: "titaeko-c440e",
-    storageBucket: "titaeko-c440e.appspot.com",
-    messagingSenderId: "228196080682",
-    appId: "1:228196080682:web:2dea57dbc8e8b84c9af753"
-  };
+<script src="script.js"></script>// 1. Video Play karne ka function
+function playVideo(videoId) {
+    const player = document.getElementById('video-player');
+    const iframe = document.getElementById('youtube-frame');
+    
+    // YouTube ka embed URL set karna
+    iframe.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1";
+    
+    // Player ko dikhana
+    player.style.display = "block";
+}
 
-  // Init Firebase
-  const app = firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-  const storage = firebase.storage();
+// 2. Video Close karne ka function
+function closeVideo() {
+    const player = document.getElementById('video-player');
+    const iframe = document.getElementById('youtube-frame');
+    
+    player.style.display = "none";
+    iframe.src = ""; // Video stop karne ke liye URL khali karna
+}
 
-  // Login / Signup / Logout Functions (simplified)
-  function login(){
-    let email = prompt("Email:");
-    let pass = prompt("Password:");
-    auth.signInWithEmailAndPassword(email, pass)
-      .then(userCredential => { alert("Login Success!"); })
-      .catch(err => alert(err.message));
-  }
+// 3. Search Bar Logic
+const searchButton = document.querySelector('.search-bar button');
+const searchInput = document.querySelector('.search-bar input');
 
-  function signup(){
-    let email = prompt("Email:");
-    let pass = prompt("Password:");
-    auth.createUserWithEmailAndPassword(email, pass)
-      .then(userCredential => { alert("Signup Success!"); })
-      .catch(err => alert(err.message));
-  }
-
-  function logout(){
-    auth.signOut().then(()=>{ alert("Logged out"); });
-  }
-
-  // Profile Load / Update
-  function loadProfile(user){
-    db.collection("users").doc(user.uid).get().then(doc=>{
-      let data = doc.data() || {};
-      document.getElementById("userEmail").innerText = user.email;
-      document.getElementById("newName").value = data.name || "";
-      document.getElementById("newDOB").value = data.dob || "";
-    });
-  }
-
-  function updateProfile(){
-    let user = auth.currentUser;
-    let name = document.getElementById("newName").value;
-    let dob = document.getElementById("newDOB").value;
-    if(!name || !dob){ alert("Name and DOB required"); return; }
-    db.collection("users").doc(user.uid).set({name, dob}).then(()=>{
-      alert("Profile Updated 🔥");
-      loadProfile(user);
-    });
-  }
-
-  // Toggle Options
-  function toggleOptions(){
-    const options = document.getElementById("options");
-    options.style.display = options.style.display === "none" ? "block" : "none";
-  }
-
-  // Video Upload
-  function uploadVideo(){
-    let file = document.getElementById("fileInput").files[0];
-    let title = document.getElementById("fileTitle").value;
-    let user = auth.currentUser;
-
-    if(!file){ alert("Choose a video"); return; }
-    if(!title){ alert("Enter title"); return; }
-
-    let storageRef = storage.ref("uploads/" + file.name);
-    storageRef.put(file).then(()=>{
-      storageRef.getDownloadURL().then(url=>{
-        db.collection("posts").add({
-          title,
-          fileURL: url,
-          user: user.email,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(()=>{
-          alert("Video Uploaded 🔥");
-          loadPosts();
-        });
-      });
-    });
-  }
-
-  // Load Posts
-  function loadPosts(){
-    const postsDiv = document.getElementById("posts");
-    postsDiv.innerHTML = "";
-    db.collection("posts").orderBy("timestamp","desc").get().then(snapshot=>{
-      snapshot.forEach(doc=>{
-        let data = doc.data();
-        let post = `
-          <div>
-            <h4>${data.title}</h4>
-            <video controls>
-              <source src="${data.fileURL}" type="video/mp4">
-            </video>
-            <p>By: ${data.user}</p>
-            <hr>
-          </div>`;
-        postsDiv.innerHTML += post;
-      });
-    });
-  }
-
-  // Auth State
-  auth.onAuthStateChanged(user=>{
-    if(user){
-      document.getElementById("authButtons").style.display="none";
-      document.getElementById("logoutBtn").style.display="inline-block";
-      document.getElementById("dashboard").style.display="block";
-      loadProfile(user);
-      loadPosts();
+searchButton.addEventListener('click', () => {
+    let query = searchInput.value;
+    if(query !== "") {
+        alert("Aap search kar rahe hain: " + query);
+        // Yahan par hum aage jaakar API call add kar sakte hain
     } else {
-      document.getElementById("authButtons").style.display="flex";
-      document.getElementById("logoutBtn").style.display="none";
-      document.getElementById("dashboard").style.display="none";
+        alert("Kuch toh likho bhai!");
     }
-  });
-
-</script>
-</body>
-</html>
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-apiKey: "AIzaSyBUjna28kgOjoRycTqtqFAK7J4Rtg0CjO8",
-authDomain: "titaeko-26c96.firebaseapp.com",
-projectId: "titaeko-26c96",
-storageBucket: "titaeko-26c96.firebasestorage.app",
-messagingSenderId: "111291755520",
-appId: "1:111291755520:web:58e2e941979813b53dbce5",
-measurementId: "G-5QMB7YVLCT"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics.js";
-
-  const firebaseConfig = { 
-    apiKey: "...",
-    authDomain: "...",
-    projectId: "...",
-    storageBucket: "...",
-    messagingSenderId: "...",
-    appId: "...",
-    measurementId: "..."
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-
-  // अब बाकी JS functions (login/signup/upload) यहाँ
-</script>
+});
