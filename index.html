@@ -546,3 +546,87 @@ firebase.auth().onAuthStateChanged(function(user) {
     console.log("File input clicked");
   });
 </script>
+<!-- Upload Section -->
+<div id="uploadSection">
+  <h3>Upload Video 🔥</h3>
+
+  <!-- File input -->
+  <input type="file" id="fileInput" accept="video/*" style="display:block; margin-bottom:10px;">
+  
+  <!-- Title input -->
+  <input type="text" id="fileTitle" placeholder="Enter title" style="display:block; margin-bottom:10px;">
+  
+  <!-- Upload button -->
+  <button id="uploadBtn">Upload</button>
+  
+  <hr>
+  <div id="posts"></div>
+</div>
+
+<script>
+const fileInput = document.getElementById("fileInput");
+const uploadBtn = document.getElementById("uploadBtn");
+const postsDiv = document.getElementById("posts");
+
+// Upload Video
+uploadBtn.addEventListener("click", function(){
+  const file = fileInput.files[0];
+  const title = document.getElementById("fileTitle").value;
+  const user = firebase.auth().currentUser;
+
+  if(!file){
+    alert("Please choose a video!");
+    return;
+  }
+  if(!title){
+    alert("Please enter a title!");
+    return;
+  }
+
+  // Firebase Storage reference
+  let storageRef = firebase.storage().ref("uploads/" + file.name);
+  storageRef.put(file).then(() => {
+    storageRef.getDownloadURL().then((url) => {
+      // Firestore save
+      db.collection("posts").add({
+        title: title,
+        fileURL: url,
+        user: user.email,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      alert("Video Uploaded 🔥");
+      loadPosts();
+    });
+  });
+});
+
+// Show Posts
+function loadPosts(){
+  postsDiv.innerHTML = "";
+  db.collection("posts").orderBy("timestamp", "desc").get().then((snapshot) => {
+    snapshot.forEach((doc) => {
+      let data = doc.data();
+      let post = `
+        <div style="margin-bottom:20px;">
+          <h4>${data.title}</h4>
+          <video width="320" height="240" controls>
+            <source src="${data.fileURL}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <p>By: ${data.user}</p>
+          <hr>
+        </div>
+      `;
+      postsDiv.innerHTML += post;
+    });
+  });
+}
+
+// Auto load posts after login
+firebase.auth().onAuthStateChanged(function(user) {
+  if(user){
+    loadPosts();
+  }
+});
+</script>
